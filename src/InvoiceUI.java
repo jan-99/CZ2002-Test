@@ -1,109 +1,75 @@
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-import java.io.Serializable;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Scanner;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+public class InvoiceUI {
+    private static InvoiceUI single_instance = null;
+    private InvoiceController invoiceController = InvoiceController.getInstance();
+    private static Scanner in = new Scanner(System.in);
+    private InvoiceUI() throws IOException {}
 
-public class Invoice implements Serializable {
-    private int invoiceID;
-    private int orderID;
-    private Order order;
-    private LocalDate date;   // LocalDateTime data type yyyy-MM-dd-HH-mm-ss-ns
-    private LocalTime time;
-    private double subtotal;
-    private double serviceCharge;
-    private double GST;
-    private double total;
-    private boolean isMember;
-    private double afterDiscount;
-
-//    public Invoice(int id, int OrderId, Order order, double subtotal, double afterDiscount, double serviceCharge, double GST, double total){
-//        invoiceID = id;
-//        orderID = OrderId;
-//        date = LocalDate.now();
-//        time = LocalTime.now();
-//        this.order = order;   //order cannot be saved in the txt file
-//        this.subtotal = subtotal;
-//        this.afterDiscount = afterDiscount;
-//        this.serviceCharge = serviceCharge;
-//        this.GST = GST;
-//        this.total = total;
-//    }
-
-//    public String toString(){
-//
-//        return(
-//                "\t\t\tOODP RESTAUTRANT\t\t\t"+
-//              "\n\tINVOICE #: "  + invoiceID + " \t\t\t"+
-//              "\n\tServer: " +order.getStaff() + "\t\tTable: " + order.getTableId() +
-//              "\n\tDate Time: " + date+time+
-//              "\n\tClient: " + order.getNumber()+
-//              "\n--------------------------------------------------------------" +
-//              order.toString()+
-//              "\n--------------------------------------------------------------" +
-//              "\n\t\t\t\t\t\t\t\t\t\tSubTotal:  " + subtotal+
-//              "\n\t\t\t\t\t\t\t\t\tafter discount :   " + afterDiscount+
-//              "\n\t\t\t\t\t\t\t\t\t\tGST:        " + GST+
-//              "\n\t\t\t\t\t\t\t\t\t10% SERVICE CHARGE " + serviceCharge+
-//              "\n--------------------------------------------------------------" +
-//              "\n\t\t\t\t\t\t\t\t\t\tTOTAL: " + total +
-//              "\n\n=============================================================="  +
-//              "\n\t\t Thank you for dining with us! "
-//                );
-//    }
-
-    //test code
-        public Invoice(int id, int OrderId, LocalDate date, LocalTime time,Order order, double subtotal, double afterDiscount, double serviceCharge, double GST, double total){
-        invoiceID = id;
-        orderID = OrderId;
-        this.date = date;
-        this.time = time;
-        this.order = order;   //order cannot be saved in the txt file
-        this.subtotal = subtotal;
-        this.afterDiscount = afterDiscount;
-        this.serviceCharge = serviceCharge;
-        this.GST = GST;
-        this.total = total;
+    public static InvoiceUI getInstance() throws IOException {
+        if (single_instance == null)
+            single_instance = new InvoiceUI();
+        return single_instance;
     }
 
-    public int getInvoiceID(){return invoiceID;}
-    public int getOrderID(){return orderID;}
-    public LocalDate getDate(){
-            return date;
-    }
-    public LocalTime getTime(){ return time;}
-    public double getSubtotal(){return subtotal;}
-    public double getServiceCharge(){return serviceCharge;}
-    public double getGST(){return GST;}
-    public double getTotal(){
-         return total;
-    }
+    public void run(){
+        Scanner sc = new Scanner(System.in);
 
-    public String toString(){
+        System.out.println("--------Invoice and Report Panel--------");
+        System.out.println("1. printInvoice"+
+                "\n2. print daily revenue report"+
+                "\n3. print monthly revenue report"+
+                "\n4. back to main panel");
 
-        return(
-
-                        "=========================RESTAURANT=========================="+
-                        "\nINVOICE #: "  + invoiceID + " \t\t\t"+
-                        "\nServer: " + "order.getStaff()" + "\t\tTable: " + "order.getTableId()" +
-                        "\nDate Time: " + date+"    "+time.truncatedTo(ChronoUnit.SECONDS)+
-                        "\nClient: " + "order.getNumber()"+
-                        "\n--------------------------------------------------------------" +
-                        "\norder.toString()"+
-                        "\n--------------------------------------------------------------" +
-                        "\n\t\t\t\t\t\t\t\t\t\tSubTotal:  " + subtotal+
-                        "\n\t\t\t\t\t\t\t\t\t\tafter discount :   " + afterDiscount+
-                        "\n\t\t\t\t\t\t\t\t\t\tGST:        " +  String.format("%.2f",GST)+
-                        "\n\t\t\t\t\t\t\t\t\t\t10% SERVICE CHARGE " + serviceCharge+
-                        "\n--------------------------------------------------------------" +
-                        "\n\t\t\t\t\t\t\t\t\t\tTOTAL: " + total +
-                        "\n\n===========================END===============================\n\n"
-
-        );
+        int choice = sc.nextInt();
+        while(true) {
+            switch (choice) {
+                case 1:
+                    createInvoice();
+                    break;
+                case 2:
+                    printRevenueReportByDay();
+                    break;
+                case 3:
+                    printRevenueReportByMonth();
+                    break;
+                case 4:
+                    System.out.println("back to main panel...");
+                    return;
+                default:
+                    System.out.println("invalid input!");
+            }
+            System.out.println("enter option:");
+            choice = sc.nextInt();
+        }
     }
 
+    private void createInvoice(){
+        Scanner sc = new Scanner(System.in);
+        int orderId;
+        System.out.print("enter order ID:");                                // handle invalid input  1. in the orderList
+        //                                                                                            2. not been checked out
+        orderId = sc.nextInt();
 
+        System.out.println("enter phoneNumber to check membership");
 
+        String number = sc.next();
+        invoiceController.printInvoice(orderId, number);
+
+    }
+
+    private void printRevenueReportByDay(){
+        Scanner sc= new Scanner(System.in);
+        System.out.println("enter the date: (dd/mm/yyyy)");
+        String dateString = sc.next();
+
+    }
+    private void printRevenueReportByMonth(){
+        Scanner sc= new Scanner(System.in);
+        System.out.println("Please enter the month(MM/YYYY)");
+        String dateStr = sc.next();
+        invoiceController.printMonthlyReport(dateStr);
+    }
 }
