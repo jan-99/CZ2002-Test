@@ -7,7 +7,7 @@ public class TableUI {
 	Scanner in = new Scanner(System.in);
 	private static TableController single_instance = null;
 	private TableController tableController = TableController.getInstance();
-	TableUI() {}
+	public TableUI() {}
 	
 	public static TableController getInstance() {
 		if(single_instance == null) {
