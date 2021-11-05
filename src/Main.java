@@ -1,6 +1,7 @@
-package tableReservation;
-
 import java.util.Scanner;
+
+import tableReservation.ReservationUI;
+import tableReservation.TableUI;
 
 public class Main {
 	
@@ -32,6 +33,9 @@ public class Main {
 		    		TableUI tableUI = new TableUI();
 		    		tableUI.run();
 		    		break;
+				case 5: 
+					MemberUI memberUI = MemberUI.getInstance();
+					memberUI.run();
 		    	default:
 		    		break;
 		    }
