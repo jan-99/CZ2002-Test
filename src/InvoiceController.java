@@ -15,28 +15,33 @@ import java.time.*;
 import java.util.*;
 
 public class InvoiceController {
-//    private ArrayList<Invoice> invoices;
+    //    private ArrayList<Invoice> invoices;
     private MemberController memberController = MemberController.getInstance();
     private OrderController orderController = OrderController.getInstance();
     private TableController tableController = TableController.getInstance();
-    private final  double GST_RATE = 0.07;
+    private final double GST_RATE = 0.07;
     private final double SERVICE_RATE = 0.1;
 
-    /** new feature */
+    /**
+     * new feature
+     */
     private static InvoiceController InvoiceController = null;
     private static final String dir = "src/data/invoice.txt";
     private ArrayList<Invoice> invoiceList;
 
 
-    /** add a getInstance() method */
+    /**
+     * add a getInstance() method
+     */
     public static InvoiceController getInstance() throws IOException {
-        if(InvoiceController == null){
+        if (InvoiceController == null) {
             InvoiceController = new InvoiceController();
         }
         return InvoiceController;
     }
+
     public InvoiceController() throws IOException {
-        /** using serialization method, have a error */
+        /** using serialization method, have an error */
 //        File file = new File(dir);
 //        if(file.exists()){
 //            System.out.println("file exist");
@@ -47,27 +52,25 @@ public class InvoiceController {
 //            invoiceList = new ArrayList<Invoice>();
 //            SerializeDB.writeSerializedObject(dir,invoiceList);
 //        }
-
         /** using text method */
         File file = new File(dir);
-        if(file.exists()){
+        if (file.exists()) {
             System.out.println("file exist");
             invoiceList = load(dir);
-        }
-        else{
+        } else {
             System.out.println("not exist");
             file.getParentFile().mkdir();
             file.createNewFile();
             invoiceList = new ArrayList<Invoice>();
-            save(dir,invoiceList);
+            save(dir, invoiceList);
         }
 
 //      invoices = new ArrayList<>(); // need to have file
 //      memberController = MemberController.getInstance();
     }
 
-    public void printDailyReport(String date){
-        try{
+    public void printDailyReport(String date) {
+        try {
 
             ZoneId defaultZoneId = ZoneId.systemDefault();
 
@@ -80,7 +83,7 @@ public class InvoiceController {
             Instant curDate = ZonedDateTime.now().toInstant();
             Instant reportInstant = reportDate.toInstant();
 
-            if(reportInstant.isAfter(curDate)){
+            if (reportInstant.isAfter(curDate)) {
                 System.out.println("Invalid date!");
                 System.out.println("Failed to check, please try again...");
                 return;
@@ -88,16 +91,16 @@ public class InvoiceController {
 
             double overallRevenue = 0.0;
 
-            for(Invoice i : invoiceList){
+            for (Invoice i : invoiceList) {
 
                 Date invoiceDate = Date.from(i.getDate().atStartOfDay(defaultZoneId).toInstant());
-                if(invoiceDate.equals(reportDate)){
+                if (invoiceDate.equals(reportDate)) {
                     System.out.println(i);
                     overallRevenue += i.getTotal();
                 }
             }
 
-            System.out.println( currentDate + ":  Total for the day is $" + String.format("%.2f", overallRevenue));
+            System.out.println(currentDate + ":  Total for the day is $" + String.format("%.2f", overallRevenue));
 
 
         } catch (ParseException e) {
@@ -110,7 +113,7 @@ public class InvoiceController {
         }
     }
 
-    public void printMonthlyReport(String dateStr){
+    public void printMonthlyReport(String dateStr) {
 
         double totalRev = 0.0;
 
@@ -119,95 +122,94 @@ public class InvoiceController {
         int month = Integer.parseInt(date[0]);
         int year = Integer.parseInt(date[1]);
 
-        Calendar cal = new GregorianCalendar(year,month,1);  // why do we need to -1？
+        Calendar cal = new GregorianCalendar(year, month, 1);  // why do we need to -1？
         int length = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         double[] revenue = new double[length];
 
-        for(int i = 0; i<length; i++){
+        for (int i = 0; i < length; i++) {
             revenue[i] = 0;
         }
 
-        for(Invoice i: invoiceList){
+        for (Invoice i : invoiceList) {
 
-            int invoice_d = i.getDate().getDayOfMonth()-1;   //minus one as a index in the array
+            int invoice_d = i.getDate().getDayOfMonth() - 1;   //minus one as a index in the array
             int invoice_m = i.getDate().getMonthValue();
             int invoice_y = i.getDate().getYear();
 
- //           System.out.println("invoice: " + invoice_d + invoice_m+ invoice_y +"\n");
+            //           System.out.println("invoice: " + invoice_d + invoice_m+ invoice_y +"\n");
 
-            if(invoice_m == month && invoice_y == year){
-                revenue[invoice_d]+=i.getTotal();
+            if (invoice_m == month && invoice_y == year) {
+                revenue[invoice_d] += i.getTotal();
                 totalRev += i.getTotal();
             }
         }
 
         // need to implement with max and min revenue of the month
 
-        int minDay=-1,  maxDay=-1;
-        double minRev= 999999;
+        int minDay = -1, maxDay = -1;
+        double minRev = 999999;
         double maxRev = 0;
 
-        for(int i = 0; i<length; i++){
-            if(revenue[i] < minRev){
+        for (int i = 0; i < length; i++) {
+            if (revenue[i] < minRev) {
                 minRev = revenue[i];
-                minDay = i+1;
+                minDay = i + 1;
             }
 
-            if(revenue[i] > maxRev){
+            if (revenue[i] > maxRev) {
                 maxRev = revenue[i];
-                maxDay = i+1;
+                maxDay = i + 1;
             }
         }
 
         System.out.println("total revenue for the month is " + String.format("%.2f", totalRev));
-        System.out.println("Highest revenue is $" + String.format("%.2f", maxRev) +" on " + maxDay + "-"+month+"-"+year);        //没有算重复的
-        System.out.println("Lowest revenue is $" + String.format("%.2f", minRev) +" on " + minDay + "-"+month+"-"+year);
+        System.out.println("Highest revenue is $" + String.format("%.2f", maxRev) + " on " + maxDay + "-" + month + "-" + year);        //没有算重复的
+        System.out.println("Lowest revenue is $" + String.format("%.2f", minRev) + " on " + minDay + "-" + month + "-" + year);
 
     }
 
 
-
-    public void printInvoice(int id, String contact){
-        Invoice invoice = addInvoice(id,contact);
+    public void printInvoice(int id, String contact) {
+        Invoice invoice = addInvoice(id, contact);
         System.out.println(invoice.toString());
     }
 
-    private Invoice addInvoice(int id, String number){
-        try{
-        /**+1 使之id 从1开始*/
-        int invoiceId = invoiceList.size() + 1;       // USE arrayList size to get the invoice ID  /
-        Order order = orderController.getOrderById(id);
-        double subtotal = order.getOrderPrice();
-        double afterDiscount = subtotal;
-        double GST;
-        double serviceCharge;
-        double total;
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
+    private Invoice addInvoice(int id, String number) {
+        try {
+            /** +1 使之id 从1开始 */
+            int invoiceId = invoiceList.size() + 1;       // USE arrayList size to get the invoice ID  /
+            Order order = orderController.getOrderById(id);
+            double subtotal = order.getOrderPrice();
+            double afterDiscount = subtotal;
+            double GST;
+            double serviceCharge;
+            double total;
+            LocalDate date = LocalDate.now();
+            LocalTime time = LocalTime.now();
 
-        String name =  memberController.getMember(number).getName();
+//            String name = memberController.getMember(number).getName();
 
-        if(memberController.checkMembership(number)){
-            System.out.println(name+" (" + number +") is a member");
-            afterDiscount = subtotal *  memberController.getDiscountRate(); //discount rate should belong to?
-        }
-        else System.out.println(name+" (" + number +") is not a member");
+            if (memberController.checkMembership(number)) {
+//                System.out.println(name + " (" + number + ") is a member");
+                afterDiscount = subtotal * memberController.getDiscountRate(); //discount rate should belong to?
+            } else; //System.out.println(name + " (" + number + ") is not a member");
 
-        GST = subtotal * GST_RATE;
-        serviceCharge = subtotal * SERVICE_RATE;
-        total = subtotal + GST + serviceCharge;
+            GST = subtotal * GST_RATE;
+            serviceCharge = subtotal * SERVICE_RATE;
+            total = subtotal + GST + serviceCharge;
 
-        /** test code */
+            /** test code */
 //        double subtotal = 10.0;
 //        double GST = subtotal * GST_RATE;
 //        double serviceCharge = subtotal * SERVICE_RATE;
 //        total = subtotal + GST + serviceCharge;
-        Invoice invoice = new Invoice(invoiceId,id, date,time,order,subtotal, afterDiscount, serviceCharge,GST,total);
-        invoiceList.add(invoice);
-        save(dir,invoiceList);
+            Invoice invoice = new Invoice(invoiceId, id, date, time, order, subtotal, afterDiscount, serviceCharge, GST, total);
+            invoiceList.add(invoice);
+            save(dir, invoiceList);
 
-        /** set table unoccupied */
-        return invoice;
+            /** set table unoccupied */
+
+            return invoice;
 
         } catch (IOException e) {
             System.out.println("shen me error? ");
@@ -217,34 +219,39 @@ public class InvoiceController {
 
     }
 
-    public void printAll(){
-        for(Invoice i : invoiceList){
+    private void unAssignTable(int orderId){
+        Order order = orderController.getOrderById(orderId);
+        int tableId = order.getTableId();
+        tableController.unAssignTable(tableId);   // print unAssign message
+    }
+
+    public void printAll() {
+        for (Invoice i : invoiceList) {
             System.out.println(i);
         }
     }
 
-    public static List read(String filename) throws IOException{
+    public static List read(String filename) throws IOException {
         List data = new ArrayList();
         Scanner scanner = new Scanner(new FileInputStream(filename));
-        try{
-            while(scanner.hasNextLine()){
+        try {
+            while (scanner.hasNextLine()) {
                 data.add(scanner.nextLine());
             }
-        }
-        finally{
+        } finally {
             scanner.close();
         }
         return data;
     }
 
 
-//   load method will be different between different controller
-    public ArrayList load(String filename) throws IOException{
+    //   load method will be different between different controller
+    public ArrayList load(String filename) throws IOException {
         ArrayList stringArray = (ArrayList) read(filename);
         ArrayList alr = new ArrayList();  // to store invoices data
 
-        for(int i =0; i<stringArray.size();i++){
-            String st = (String)stringArray.get(i);
+        for (int i = 0; i < stringArray.size(); i++) {
+            String st = (String) stringArray.get(i);
             StringTokenizer star = new StringTokenizer(st, "|");
 
 
@@ -269,29 +276,31 @@ public class InvoiceController {
     }
 
 
-
-    /** write fixed content to the given file */
-    public static void write(String fileName, List data) throws IOException{
+    /**
+     * write fixed content to the given file
+     */
+    public static void write(String fileName, List data) throws IOException {
         PrintWriter out = new PrintWriter(new FileWriter(fileName));
 
-        try{
-            for(int i=0; i<data.size();i++){
-                out.println((String)data.get(i));
+        try {
+            for (int i = 0; i < data.size(); i++) {
+                out.println((String) data.get(i));
             }
-        }
-        finally{
+        } finally {
             out.close();
         }
     }
 
 
-    /** save method
-     * save method will be different with different controlelr*/
+    /**
+     * save method
+     * save method will be different with different controlelr
+     */
 
-    public static void save(String filename, List al) throws IOException{
+    public static void save(String filename, List al) throws IOException {
         List alw = new ArrayList();  //to store data
 
-        for(int i=0; i<al.size(); i++){
+        for (int i = 0; i < al.size(); i++) {
             Invoice invoice = (Invoice) al.get(i);
             StringBuilder st = new StringBuilder();
             st.append(invoice.getInvoiceID()); // trim() ??
@@ -316,22 +325,25 @@ public class InvoiceController {
 
         }
     }
+}
+
+
 
 
 
 /** test code */
-    public static void main(String[] args) throws IOException {
-        InvoiceController controller = new InvoiceController();
-//       controller.printInvoice(1,"12345678");
-//      controller.printInvoice(2,"12345678");
-//        controller.printInvoice(3,"12345678");
-//         controller.printAll();
-//        controller.printDailyReport("05/11/2021");
-//        controller.printMonthlyReport("11/2021");
-        controller.printInvoice(5,"12345678");
-    }
-
-}
+//    public static void main(String[] args) throws IOException {
+//        InvoiceController controller = new InvoiceController();
+////       controller.printInvoice(1,"12345678");
+////      controller.printInvoice(2,"12345678");
+////        controller.printInvoice(3,"12345678");
+////         controller.printAll();
+////        controller.printDailyReport("05/11/2021");
+////        controller.printMonthlyReport("11/2021");
+//        controller.printInvoice(5,"12345678");
+//    }
+//
+//}
 
 /**write new*/
 //    public boolean writeNew(String fileName, Serializable obj){
