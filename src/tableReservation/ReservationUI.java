@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
+import java.time.LocalDateTime;    
+import java.time.format.DateTimeFormatter;
+
 public class ReservationUI {
 	
 	private ReservationController reservationController = ReservationController.getInstance();
@@ -24,11 +27,12 @@ public class ReservationUI {
 	
 	public void run()
 	{
-		int date;
+		String date;
 		int time; 
 		String name; 
 		String contact; 
 		int numberOfPax;
+		String appointmentDateTime = null;
 		
 		int choice = this.displayOptions();
 		while (choice != 0)
@@ -36,23 +40,54 @@ public class ReservationUI {
 			switch(choice) {
 				case 1: 
 					System.out.println("Please enter date of reservation: ");
-					date = in.nextInt();
-					System.out.println("Please enter time of reservation (24 hour): ");
+					date = in.nextLine();
+					if (date.length() == 1)
+						date = '0' + date;
+
+					System.out.println("Please pick a reservation time");
+					System.out.println("1. 7pm - 9pm");
+					System.out.println("2. 9pm - 11pm");
 					time = in.nextInt();
+
 					System.out.println("Please enter the number of person(s): ");
 					numberOfPax = in.nextInt();
 					in.nextLine();
-					String appointmentDateTime = String.format("%d Nov %dH", date, time);
+
+					switch (time)
+					{
+						case 1:
+							appointmentDateTime = String.format("2019-11-%s 19:00", date);
+							break;
+						case 2:
+							appointmentDateTime = String.format("2019-11-%s 21:00", date);
+							break;
+					}
+
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
+					LocalDateTime dateTime = LocalDateTime.parse(appointmentDateTime, formatter);
+
 					
 					System.out.println("Please enter your name: ");
 					name = in.nextLine();
 					
 					System.out.println("Please enter your contact: ");
 					contact = in.nextLine();
+					while (true)
+					{
+						try {
+							if (contact.length() != 8)
+								throw new Exception("Invalid contact number!");
+						} catch (Exception e) {
+							System.out.println(e.getMessage());
+							System.out.println("Please enter your contact: ");
+							contact = in.nextLine();
+							continue;
+						}
+						break;
+					}
 					
-					
-					int reservationId = reservationController.createReservation(name, contact, numberOfPax);
-					//reservationController.showReservation(reservationId);
+					int reservationId = reservationController.createReservation(name, contact, numberOfPax, dateTime);
+					reservationController.checkReservation(contact);
 					break;
 				case 2:
 					System.out.println("Please enter your contact: ");

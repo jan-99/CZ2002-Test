@@ -36,6 +36,11 @@ public class Main {
 				case 5: 
 					MemberUI memberUI = MemberUI.getInstance();
 					memberUI.run();
+					break;
+				case 6: 
+					InvoiceUI invoiceUI = InvoiceUI.getInstance();
+					invoiceUI.run();
+					break;
 		    	default:
 		    		break;
 		    }

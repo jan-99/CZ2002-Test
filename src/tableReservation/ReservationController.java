@@ -12,6 +12,8 @@ public class ReservationController {
 	private TableController tableController = TableController.getInstance(); 
 	
 	private static ReservationController reservationController = null;
+
+	private static int reservationId = 0;
 	
 	//private function to clearReservation()
 	private void clearReservation() {
@@ -36,7 +38,6 @@ public class ReservationController {
 	public void displayAllReservations() 
 	{
 		for (Reservation r: reservationList) {
-			System.out.println("Reservation no.: " + reservationList.indexOf(r));
 			System.out.println(r.toString());			
 		}
 	}
@@ -59,7 +60,7 @@ public class ReservationController {
 				
 	} */
 	
-	public int createReservation(String name, String contact, int numberOfPax)
+	public int createReservation(String name, String contact, int numberOfPax, LocalDateTime reservationTime)
 	{
 		// call function to clear expired Reservations
 		// return table list for numberOfPax
@@ -70,11 +71,12 @@ public class ReservationController {
 		System.out.println("Please enter the table number you would like to reserve: ");
 		
 		int tableId = in.nextInt();
-		tableController.setOccupied(tableId);
+		//tableController.setOccupied(tableId); -> table is only set to reserved if customer is here
 		
-		int reservationId = reservationList.size(); 
+		reservationId = reservationId + 1; // create a static variable 
+		
 		// change appointDateTime from String to LocateDate
-		Reservation reservation = new Reservation(name, contact, numberOfPax, tableId);
+		Reservation reservation = new Reservation(reservationId, name, contact, numberOfPax, tableId, reservationTime);
 		reservationList.add(reservation);
 		return reservationId;
 	}
@@ -109,7 +111,6 @@ public class ReservationController {
 				throw new Exception("Invalid contact number!");
 			for (Reservation r : reservationList) {
 				if (r.getContact().contains(contact)) {
-					System.out.println("\nReservation no.: " + reservationList.indexOf(r));
 					System.out.println(r.toString());
 					found = true;
 				}				
@@ -133,12 +134,13 @@ public class ReservationController {
 			boolean found = checkReservation(contact);
 			if (found) {
 				System.out.println("Enter reservation no. to delete: ");
-				int index = in.nextInt();
+				int Id = in.nextInt();
 				in.nextLine();
 				System.out.println("Do you wish to remove this reservation? Y/N");
 				if (in.nextLine().charAt(0) == 'Y')
 				{
-					reservationList.remove(index);
+					reservationList.removeIf(reservation -> reservation.getReservationId() == Id);
+					//reservationList.remove(index); -> cannot use index of reservationList
 					System.out.println("Reservation removed!");
 				}					
 			}			

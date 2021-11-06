@@ -5,10 +5,12 @@ import java.time.LocalDate;
 public class InvoiceUI {
     private static InvoiceUI single_instance = null;
     private InvoiceController invoiceController = InvoiceController.getInstance();
+    
     private static Scanner in = new Scanner(System.in);
-    private InvoiceUI() throws IOException {}
+    
+    private InvoiceUI(){}
 
-    public static InvoiceUI getInstance() throws IOException {
+    public static InvoiceUI getInstance()  {
         if (single_instance == null)
             single_instance = new InvoiceUI();
         return single_instance;

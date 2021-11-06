@@ -8,14 +8,16 @@ public class Reservation {
 	private LocalDateTime reservationTime; // system clock time
 	//private LocalDateTime appointmentDateTime; //"11-02, 1900"
 	//private LocalDateTime expiryTime = // find code to plus 30min to appointmentDateTime; 	
+	private int reservationId;
 	private String name;
 	private String contact; 
 	private int numberOfPax;
 	private int tableId;
 	
-	public Reservation(String name, String contact, int numberOfPax, int tableId)
+	public Reservation(int reservationId, String name, String contact, int numberOfPax, int tableId, LocalDateTime reservationTime)
 	{	
-		this.reservationTime = LocalDateTime.now(); 
+		this.reservationId = reservationId;
+		this.reservationTime = reservationTime; 
 		//this.appointmentDateTime = appointmentDateTime;
 		this.name = name;
 		this.contact = contact;
@@ -23,11 +25,15 @@ public class Reservation {
 		this.tableId = tableId;
 	}
 	
-	/* public LocalDateTime getAppointmentDateTime() // CANNOT CHANGE APPOINTMENT DATE TIME
+	public LocalDateTime getRervationTime() // CANNOT CHANGE APPOINTMENT DATE TIME
 	{
-		return appointmentDateTime; 
-	} */
+		return reservationTime; 
+	} 
 	
+	public int getReservationId()
+	{
+		return reservationId;
+	}
 	
 	public String getName()
 	{
@@ -50,7 +56,8 @@ public class Reservation {
 	}
 
 	public String toString() {
-		return "Reservation made for " + numberOfPax +
+		return "Reservation ID: " + reservationId +
+		"\nReservation made for " + numberOfPax +
 		" under the name, " + name +
 		"\nThe table number is " + tableId +
 		".\nThe appointment date time is " + reservationTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n";

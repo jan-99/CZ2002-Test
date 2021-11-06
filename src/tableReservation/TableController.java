@@ -94,6 +94,9 @@ public class TableController {
 	// Showing all unoccupied tables corresponding to the number of people 
 	public void displayUnoccupiedTables(int numberOfPax)
 	{	
+		// If we do not want to use seatNumber directly -> this way we don't have to import the package directly
+		//Table.seatNumber tablePax = null;
+
 		seatNumber tablePax = null;
 		
 		switch (numberOfPax)
