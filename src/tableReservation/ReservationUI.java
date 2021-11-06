@@ -51,28 +51,22 @@ public class ReservationUI {
 					contact = in.nextLine();
 					
 					
-					int reservationId = reservationController.createReservation(appointmentDateTime, name, contact, numberOfPax);
-					reservationController.showReservation(reservationId);
+					int reservationId = reservationController.createReservation(name, contact, numberOfPax);
+					//reservationController.showReservation(reservationId);
 					break;
 				case 2:
-				case 3: 
-					System.out.println("Please enter your reservationId: ");
-					int resID = in.nextInt();
-					in.nextLine();
-					reservationController.showReservation(resID);
-					
-					System.out.println("Do you wish to remove this reservation? Y/N");
-					char confirmation = in.nextLine().charAt(0);
-						if (confirmation == 'Y')
-						{
-							reservationController.removeReservation(resID);
-						}					
+					System.out.println("Please enter your contact: ");
+					contact = in.nextLine();	
+					reservationController.checkReservation(contact);
 					break;
-				case 4:
+				case 3: 
 					System.out.println("Please enter your contact: ");
 					contact = in.nextLine();
-					
-					reservationController.displayAllReservation(contact);
+					reservationController.removeReservation(contact);					
+									
+					break;
+				case 4:
+					reservationController.displayAllReservations();
 					break;
 				
 			}
@@ -88,9 +82,9 @@ public class ReservationUI {
 	        System.out.println("--------Reservation System--------");
 		 	System.out.println("0. Go back to MainUI");
 	        System.out.println("1. Create a new reservation");
-	        System.out.println("2. Update reservation details");
-	        System.out.println("3. Remove a reservation");
-	        System.out.println("4. Print all reservations");
+	        System.out.println("2. Check reservation");
+	        System.out.println("3. Remove reservation");
+	        System.out.println("4. Display all reservations");
 	        System.out.println("Your choice: ");
 	        int choice = in.nextInt();
 	        in.nextLine();
