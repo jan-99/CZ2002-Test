@@ -1,5 +1,6 @@
 package tableReservation;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,6 +14,9 @@ public class ReservationController {
 	private static ReservationController reservationController = null;
 	
 	//private function to clearReservation()
+	private void clearReservation() {
+
+	};
 
 	public ReservationController()
 	{
@@ -29,12 +33,15 @@ public class ReservationController {
 	
 	
 	// display all the attributes of reservation class corresponding to its reservation id
-	public void displayAllReservation() 
+	public void displayAllReservations() 
 	{
-		
+		for (Reservation r: reservationList) {
+			System.out.println("Reservation no.: " + reservationList.indexOf(r));
+			System.out.println(r.toString());			
+		}
 	}
 	
-	public void displayAllReservation(String contact)
+	/* public void displayAllReservation(String contact)
 	{
 		for (Reservation i: reservationList)
 		{
@@ -50,9 +57,9 @@ public class ReservationController {
 			}
 		}
 				
-	}
+	} */
 	
-	public int createReservation(String appointmentDateTime, String name, String contact, int numberOfPax)
+	public int createReservation(String name, String contact, int numberOfPax)
 	{
 		// call function to clear expired Reservations
 		// return table list for numberOfPax
@@ -67,23 +74,22 @@ public class ReservationController {
 		
 		int reservationId = reservationList.size(); 
 		// change appointDateTime from String to LocateDate
-		Reservation reservation = new Reservation(reservationId, appointmentDateTime, name, contact, numberOfPax, tableId);
+		Reservation reservation = new Reservation(name, contact, numberOfPax, tableId);
 		reservationList.add(reservation);
 		return reservationId;
 	}
 	
-	public void showReservation(int reservationId)
+	/* public void showReservation(int reservationId)
 	{
-		System.out.println("Your reservationId is " + reservationList.get(reservationId).getReservationId()
-							+ "\nReservation made for " + 
+		System.out.println("\nReservation made for " + 
 							reservationList.get(reservationId).getNumberOfPax() +
 							" under the name, " + reservationList.get(reservationId).getName() +
 							"\nThe table number is " + reservationList.get(reservationId).getTableId() +
 							".\nYour appointment date time is " + reservationList.get(reservationId).getAppointmentDateTime());
 		System.out.println();
-	}
+	} */
 	
-	public void removeReservation(int reservationID)
+	/* public void removeReservation(int reservationID)
 	{
 		
 		int tableId = reservationList.get(reservationID).getTableId();
@@ -91,14 +97,56 @@ public class ReservationController {
 		reservationList.remove(reservationID);
 		System.out.println("Reservation has been removed");
 
-	}
+	} */
 
 	// check reservation method: clearReservation method + search by contact no.
+
+	public boolean checkReservation(String contact) {
+		clearReservation();		
+		boolean found = false;
+		try {
+			if (contact.length() != 8)
+				throw new Exception("Invalid contact number!");
+			for (Reservation r : reservationList) {
+				if (r.getContact().contains(contact)) {
+					System.out.println("\nReservation no.: " + reservationList.indexOf(r));
+					System.out.println(r.toString());
+					found = true;
+				}				
+			}
+			if (!found) {
+				System.out.println("No reservation found!");
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return found;
+	}
 	// method to remove expired Reservations: clearReservation method + loop through all reservations and return index of reservation(s) 
 	
-	public void getTablebyId()
-	{
-		
+	public void removeReservation(String contact) {
+		clearReservation();
+		try {
+			if (contact.length() != 8)
+				throw new Exception("Invalid contact number!");
+
+			boolean found = checkReservation(contact);
+			if (found) {
+				System.out.println("Enter reservation no. to delete: ");
+				int index = in.nextInt();
+				in.nextLine();
+				System.out.println("Do you wish to remove this reservation? Y/N");
+				if (in.nextLine().charAt(0) == 'Y')
+				{
+					reservationList.remove(index);
+					System.out.println("Reservation removed!");
+				}					
+			}			
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
 	}
 	
 	
