@@ -5,20 +5,19 @@ import java.time.LocalDateTime;
 public class Reservation {
 
 	private int reservationId;
-	//private LocalDateTime reservationTime; // system clock time
-	private String appointmentDateTime; //"11-02, 1900"
-	
+	private LocalDateTime reservationTime; // system clock time
+	private LocalDateTime appointmentDateTime; //"11-02, 1900"
+	//private LocalDateTime expiryTime = // find code to plus 30min to appointmentDateTime; 	
 	private String name;
 	private String contact; 
 	private int numberOfPax;
 	private int tableId;
 	
-	public Reservation(int reservationId, String appointmentDateTime, String name, String contact, int numberOfPax, int tableId)
+	public Reservation(LocalDateTime appointmentDateTime, String name, String contact, int numberOfPax, int tableId)
 	{
-		this.reservationId = reservationId;
+		//this.reservationId = reservationId;
 		
-		//LocalDateTime now = LocalDateTime.now(); 
-		//this.reservationTime = now;
+		this.reservationTime = LocalDateTime.now(); 
 		this.appointmentDateTime = appointmentDateTime;
 		this.name = name;
 		this.contact = contact;
