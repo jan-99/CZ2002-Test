@@ -13,7 +13,7 @@ public class TableController {
 	{
 		
 		listOfTables = new Table[SIZE];
-		Table table1 = new Table(1, 2);
+		Table table1 = new Table(1, Table.seatNumber.TWO);
 		Table table2 = new Table(2, Table.seatNumber.TWO);
 		Table table3 = new Table(3, Table.seatNumber.TWO);
 		Table table4 = new Table(4, Table.seatNumber.TWO);
