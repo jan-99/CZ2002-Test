@@ -1,6 +1,6 @@
 package tableReservation;
 
-import tableReservation.Table.seatNumber;
+import java.util.ArrayList;
 
 public class TableController {
 	
@@ -94,34 +94,7 @@ public class TableController {
 	// Showing all unoccupied tables corresponding to the number of people 
 	public void displayUnoccupiedTables(int numberOfPax)
 	{	
-		// If we do not want to use seatNumber directly -> this way we don't have to import the package directly
-		//Table.seatNumber tablePax = null;
-
-		seatNumber tablePax = null;
-		
-		switch (numberOfPax)
-		{
-			case 1:
-			case 2:
-				tablePax = Table.seatNumber.TWO;
-				break;
-			case 3:
-			case 4: 
-				tablePax = Table.seatNumber.FOUR;
-				break;
-			case 5:
-			case 6:
-				tablePax = Table.seatNumber.SIX;
-				break;
-			case 7:
-			case 8: 
-				tablePax = Table.seatNumber.EIGHT;
-				break;
-			case 9:
-			case 10:
-				tablePax = Table.seatNumber.TEN;
-				break;
-		}
+		Table.seatNumber tablePax = convertIntToEnum(numberOfPax);
 	
 		System.out.println("Showing all unoccupied tables: ");
 		int j = 1;
@@ -155,5 +128,45 @@ public class TableController {
 	public void getTableByID(int tableId)
 	{
 		System.out.println("Table " + tableId + "Occupied: " + listOfTables[tableId].getOccupied() + " Number of Seats: " + listOfTables[tableId].numOfSeats);
+	}
+
+	public Table.seatNumber convertIntToEnum(int pax){
+		Table.seatNumber tablePax = null;
+		switch (pax)
+		{
+			case 1:
+			case 2:
+				tablePax = Table.seatNumber.TWO;
+				break;
+			case 3:
+			case 4:
+				tablePax = Table.seatNumber.FOUR;
+				break;
+			case 5:
+			case 6:
+				tablePax = Table.seatNumber.SIX;
+				break;
+			case 7:
+			case 8:
+				tablePax = Table.seatNumber.EIGHT;
+				break;
+			case 9:
+			case 10:
+				tablePax = Table.seatNumber.TEN;
+				break;
+		}
+		return tablePax;
+	}
+	/**get table by pax*/
+	public ArrayList<Integer> getTableByPax(int pax){
+		Table.seatNumber sn = convertIntToEnum(pax);
+		ArrayList<Integer> tables = new ArrayList<>();
+
+		for(int i =0; i<SIZE; ++i){
+			if(listOfTables[i].getPax().equals(sn)){
+				tables.add(listOfTables[i].getTableId());
+			}
+		}
+		return tables;
 	}
 }

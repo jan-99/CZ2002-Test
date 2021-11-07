@@ -30,11 +30,6 @@ public class TableUI {
 			case 3:
 				tableController.displayOccupiedTables();
 				break;
-//			case 4:
-//				Scanner sc = new Scanner(System.in);
-//				int tableId = sc.nextInt();
-//				tableController.getTableByID(tableId);
-//				break;
 	        }
 	        
 	        choice = this.displayOptions();
@@ -43,31 +38,13 @@ public class TableUI {
 		
 	}
 
-//	private void getTableByID(int tableId) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
-	private void displayOccupiedTables() {
-		// TODO Auto-generated method stub		
-	}
-
-	private void displayUnoccupiedTables() {
-		// TODO Auto-generated method stub		
-	}
-
-	private void displayAllTables() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	private int displayOptions() {
 		System.out.println("--------TableUI--------");
         System.out.println("0. Go back to MainUI" +
         		"\n1. displayAllTables"+
                 "\n2. displayUnoccupiedTables"+
-                "\n3. displayOccupiedTables"+
-                "\n4. getTableByID");
+                "\n3. displayOccupiedTables");
         int choice = in.nextInt();
         in.nextLine();
         return choice;

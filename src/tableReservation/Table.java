@@ -37,7 +37,10 @@ public class Table{
 	{
 		this.isOccupied = true; 
 	}
-	
+
+	public seatNumber getPax(){
+		return numOfSeats;
+	}
 	public void setUnoccupied()
 	{
 		this.isOccupied = false;

@@ -1,13 +1,13 @@
 package tableReservation;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ReservationController {
 	
 	private static Scanner in = new Scanner(System.in);
-
+	private final int EXPIRE_PERIOD = 5;
 	private ArrayList<Reservation> reservationList;
 	private TableController tableController = TableController.getInstance(); 
 	
@@ -15,10 +15,6 @@ public class ReservationController {
 
 	private static int reservationId = 0;
 	
-	//private function to clearReservation()
-	private void clearReservation() {
-
-	};
 
 	public ReservationController()
 	{
@@ -42,76 +38,72 @@ public class ReservationController {
 		}
 	}
 	
-	/* public void displayAllReservation(String contact)
-	{
-		for (Reservation i: reservationList)
-		{
-			if (i.getContact().equals(contact))
-			{
-				System.out.println("Your reservationId is " + i.getReservationId()
-						+ "\nReservation made for " + 
-						i.getNumberOfPax() +
-						" under the name, " + i.getName() +
-						"\nThe table number is " + i.getTableId() +
-						".\nYour appointment date time is " + i.getAppointmentDateTime());
-				System.out.println();
-			}
-		}
-				
-	} */
 	public Reservation getReservationById(int reservationId) {
 		for (Reservation res : reservationList){
 			if( res.getReservationId() == reservationId)
 				return res;
 		}
+		System.out.println("Reservation not found");
 		return null;
 	}
 
+	//clearReservation() is to remove the expired Reservations from reservation list
+	private void clearReservation() {
+		LocalDate today = LocalDate.now();
+		LocalTime curTime = LocalTime.now();
+		for(Reservation reservation : reservationList){
+			LocalTime expireTime = reservation.getAppointmentTime().plusMinutes(EXPIRE_PERIOD);
+			if(reservation.getAppointmentDate().equals(today) && curTime.isAfter(expireTime)){
+				reservationList.remove(reservation);
+			}
+			
+		}
+	};
 
-
-	public int createReservation(String name, String contact, int numberOfPax, LocalDateTime reservationTime)
+	public void createReservation(String name, String contact, int numberOfPax, LocalDate date, LocalTime time)
 	{
-		// call function to clear expired Reservations
-		// return table list for numberOfPax
-		// Conflict resolution: loop through reservations for all tables with numberOfPax and check if appointDateTime >= endTimeOfAppoint
-		// -> if have reservation for table, delete from available table list
+		clearReservation();
+		// get all table of specific pax
+		ArrayList<Integer> tableList = tableController.getTableByPax(numberOfPax);
 
-		tableController.displayUnoccupiedTables(numberOfPax); //display unoccupied tables should try to return an array of tableid
-		System.out.println("Please enter the table number you would like to reserve: ");
-		
+		// check time to remove the reserved table from table list
+		for(Reservation reservation : reservationList){
+			LocalTime otherTime = reservation.getAppointmentTime().plusMinutes(119);
+			if(reservation.getAppointmentDate().equals(date) && otherTime.isAfter(time)){
+				if(tableList.contains(reservation.getTableId())) {
+					System.out.println(reservation.getTableId());
+					int idx = tableList.indexOf(reservation.getTableId()); 
+    				tableList.remove(idx);
+				}
+			}
+		}
+
+		// display available table id and ask user to choose the id
+		System.out.println("unreserved table: " + tableList.toString());
+		System.out.println("enter the table id to reserve the table");
 		int tableId = in.nextInt();
-		//tableController.setOccupied(tableId); -> table is only set to reserved if customer is here
+		do {
+			try {			
+			if (!tableList.contains(tableId)) {
+				throw new Exception("Invalid table number!");
+			}
+			} 	catch (Exception e) {
+				System.out.println(e.getMessage());				
+				System.out.println("enter the table id to reserve the table");
+				tableId = in.nextInt();
+				continue;
+			}
+			break;
+		} while (true);
 		
-		reservationId = reservationId + 1; // create a static variable 
-		
-		// change appointDateTime from String to LocateDate
-		Reservation reservation = new Reservation(reservationId, name, contact, numberOfPax, tableId, reservationTime);
-		reservationList.add(reservation);
-		return reservationId;
-	}
-	
-	/* public void showReservation(int reservationId)
-	{
-		System.out.println("\nReservation made for " + 
-							reservationList.get(reservationId).getNumberOfPax() +
-							" under the name, " + reservationList.get(reservationId).getName() +
-							"\nThe table number is " + reservationList.get(reservationId).getTableId() +
-							".\nYour appointment date time is " + reservationList.get(reservationId).getAppointmentDateTime());
-		System.out.println();
-	} */
-	
-	/* public void removeReservation(int reservationID)
-	{
-		
-		int tableId = reservationList.get(reservationID).getTableId();
-		tableController.setUnoccupied(tableId);		
-		reservationList.remove(reservationID);
-		System.out.println("Reservation has been removed");
+		reservationId = reservationId + 1;
 
-	} */
+		// create the reservation
+		Reservation reservation = new Reservation(reservationId, name, contact, numberOfPax, tableId, date, time);
+		reservationList.add(reservation);
+	}
 
 	// check reservation method: clearReservation method + search by contact no.
-
 	public boolean checkReservation(String contact) {
 		clearReservation();		
 		boolean found = false;
@@ -149,7 +141,6 @@ public class ReservationController {
 				if (in.nextLine().charAt(0) == 'Y')
 				{
 					reservationList.removeIf(reservation -> reservation.getReservationId() == Id);
-					//reservationList.remove(index); -> cannot use index of reservationList
 					System.out.println("Reservation removed!");
 				}					
 			}			
