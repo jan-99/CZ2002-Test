@@ -1,6 +1,5 @@
 package tableReservation;
 
-
 import java.util.ArrayList;
 
 public class TableController {

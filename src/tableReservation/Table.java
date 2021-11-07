@@ -43,6 +43,7 @@ public class Table{
 	}
 	public void setUnoccupied()
 	{
+		this.isOccupied = false;
 	}
 	
 }

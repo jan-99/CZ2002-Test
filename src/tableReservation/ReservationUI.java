@@ -8,6 +8,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
 
+import java.time.LocalDateTime;    
+import java.time.format.DateTimeFormatter;
+
 public class ReservationUI {
 	
 	private ReservationController reservationController = ReservationController.getInstance();
@@ -72,8 +75,21 @@ public class ReservationUI {
 
 					System.out.println("Please enter your contact: ");
 					contact = in.nextLine();
-
+					while (true)
+					{
+						try {
+							if (contact.length() != 8)
+								throw new Exception("Invalid contact number!");
+						} catch (Exception e) {
+							System.out.println(e.getMessage());
+							System.out.println("Please enter your contact: ");
+							contact = in.nextLine();
+							continue;
+						}
+						break;
+					}
 					reservationController.createReservation(name, contact, numberOfPax, appointmentDate, appointmentTime);
+					reservationController.checkReservation(contact);
 					break;
 				case 2:
 					System.out.println("Please enter your contact: ");
@@ -112,6 +128,7 @@ public class ReservationUI {
 	 /** assume that can only make reservation at least one day in advance */
 	private boolean isValidDate(LocalDate appointmentDate){
 		if(appointmentDate.isAfter(LocalDate.now())) return true;
+		System.out.println("Reservations must be made 1 day in advanced");
 		return false;
 	}
 

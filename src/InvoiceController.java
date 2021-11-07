@@ -7,6 +7,7 @@
  */
 
 import FileReadWrite.SerializeDB;
+import tableReservation.TableController;
 
 import java.io.*;
 import java.text.ParseException;
@@ -33,14 +34,14 @@ public class InvoiceController {
     /**
      * add a getInstance() method
      */
-    public static InvoiceController getInstance() throws IOException {
+    public static InvoiceController getInstance() {
         if (InvoiceController == null) {
             InvoiceController = new InvoiceController();
         }
         return InvoiceController;
     }
 
-    public InvoiceController() throws IOException {
+    public InvoiceController() {
         /** using serialization method, have an error */
 //        File file = new File(dir);
 //        if(file.exists()){
