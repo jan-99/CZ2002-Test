@@ -59,7 +59,16 @@ public class ReservationController {
 		}
 				
 	} */
-	
+	public Reservation getReservationById(int reservationId) {
+		for (Reservation res : reservationList){
+			if( res.getReservationId() == reservationId)
+				return res;
+		}
+		return null;
+	}
+
+
+
 	public int createReservation(String name, String contact, int numberOfPax, LocalDateTime reservationTime)
 	{
 		// call function to clear expired Reservations
