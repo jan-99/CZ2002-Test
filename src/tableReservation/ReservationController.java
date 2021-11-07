@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class ReservationController {
 	
 	private static Scanner in = new Scanner(System.in);
-	private final int EXPIRE_PERIOD = 30;
+	private final int EXPIRE_PERIOD = 5;
 	private ArrayList<Reservation> reservationList;
 	private TableController tableController = TableController.getInstance(); 
 	
@@ -84,9 +84,10 @@ public class ReservationController {
 		LocalTime curTime = LocalTime.now();
 		for(Reservation reservation : reservationList){
 			LocalTime expireTime = reservation.getAppointmentTime().plusMinutes(EXPIRE_PERIOD);
-			if(reservation.getAppointmentDate().equals(today) && expireTime.isAfter(curTime)){
+			if(reservation.getAppointmentDate().equals(today) && curTime.isAfter(expireTime)){
 				reservationList.remove(reservation);
 			}
+			
 		}
 	};
 
@@ -99,15 +100,38 @@ public class ReservationController {
 		// check time to remove the reserved table from table list
 		for(Reservation reservation : reservationList){
 			LocalTime otherTime = reservation.getAppointmentTime().plusMinutes(119);
+			System.out.println("Before if time");
 			if(reservation.getAppointmentDate().equals(date) && otherTime.isAfter(time)){
-				if(tableList.contains(reservation.getTableId())) tableList.remove(reservation.getTableId());
+				System.out.println("After if time");
+				if(tableList.contains(reservation.getTableId())) {
+					System.out.println(reservation.getTableId());
+					//tableList.remove(reservation.getTableId());
+					int idx = tableList.indexOf(reservation.getTableId()); 
+    				tableList.remove(idx);
+				}
 			}
+			//tableList.removeIf(tableList -> reservation.getTableId() == reservation.getTableId());
 		}
 
 		// display available table id and ask user to choose the id
 		System.out.println("unreserved table: " + tableList.toString());
 		System.out.println("enter the table id to reserve the table");
 		int tableId = in.nextInt();
+		do {
+			try {			
+			if (!tableList.contains(tableId)) {
+				throw new Exception("Invalid table number!");
+			}
+			} 	catch (Exception e) {
+				System.out.println(e.getMessage());				
+				System.out.println("enter the table id to reserve the table");
+				tableId = in.nextInt();
+				continue;
+			}
+			break;
+		} while (true);
+		
+		
 
 		// create the reservation
 		Reservation reservation = new Reservation(name, contact, numberOfPax, tableId, date, time);

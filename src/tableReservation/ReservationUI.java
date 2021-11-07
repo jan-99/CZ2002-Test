@@ -46,7 +46,7 @@ public class ReservationUI {
 						do {
 							System.out.println("Please enter date of reservation: dd/mm/yyyy");
 							dateStr = in.next();
-							validDateFormat = isValidDateFormat(dateStr, DATE_FORMAT);
+							validDateFormat = isValidDateFormat(dateStr, DATE_FORMAT);							
 						} while (!validDateFormat);
 						DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 						appointmentDate = LocalDate.parse(dateStr,dateFormatter);
@@ -107,12 +107,12 @@ public class ReservationUI {
 			return true;
 		} catch (ParseException ex) {
 			return false;
-		}
+		}		
 	}
 	 /** assume that can only make reservation at least one day in advance */
 	private boolean isValidDate(LocalDate appointmentDate){
-		if(appointmentDate.isAfter(LocalDate.now())) return false;
-		return true;
+		if(appointmentDate.isAfter(LocalDate.now())) return true;
+		return false;
 	}
 
 

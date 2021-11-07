@@ -95,7 +95,7 @@ public class TableController {
 	// Showing all unoccupied tables corresponding to the number of people 
 	public void displayUnoccupiedTables(int numberOfPax)
 	{	
-		seatNumber tablePax = convertIntToEnum(numberOfPax)
+		Table.seatNumber tablePax = convertIntToEnum(numberOfPax);
 	
 		System.out.println("Showing all unoccupied tables: ");
 		int j = 1;
@@ -131,9 +131,9 @@ public class TableController {
 		System.out.println("Table " + tableId + "Occupied: " + listOfTables[tableId].getOccupied() + " Number of Seats: " + listOfTables[tableId].numOfSeats);
 	}
 
-	public seatNumber convertIntToEnum(int pax){
-		seatNumber tablePax = null;
-		switch (numberOfPax)
+	public Table.seatNumber convertIntToEnum(int pax){
+		Table.seatNumber tablePax = null;
+		switch (pax)
 		{
 			case 1:
 			case 2:
@@ -156,6 +156,7 @@ public class TableController {
 				tablePax = Table.seatNumber.TEN;
 				break;
 		}
+		return tablePax;
 	}
 	/**get table by pax*/
 	public ArrayList<Integer> getTableByPax(int pax){
