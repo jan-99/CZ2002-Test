@@ -1,22 +1,18 @@
 package tableReservation;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ReservationController {
 	
 	private static Scanner in = new Scanner(System.in);
-
+	private final int EXPIRE_PERIOD = 30;
 	private ArrayList<Reservation> reservationList;
 	private TableController tableController = TableController.getInstance(); 
 	
 	private static ReservationController reservationController = null;
-	
-	//private function to clearReservation()
-	private void clearReservation() {
 
-	};
 
 	public ReservationController()
 	{
@@ -58,8 +54,8 @@ public class ReservationController {
 		}
 				
 	} */
-	
-	public int createReservation(String name, String contact, int numberOfPax)
+
+	/* public int createReservation(String name, String contact, int numberOfPax)
 	{
 		// call function to clear expired Reservations
 		// return table list for numberOfPax
@@ -68,15 +64,54 @@ public class ReservationController {
 
 		tableController.displayUnoccupiedTables(numberOfPax); //display unoccupied tables should try to return an array of tableid
 		System.out.println("Please enter the table number you would like to reserve: ");
-		
+
 		int tableId = in.nextInt();
 		tableController.setOccupied(tableId);
-		
-		int reservationId = reservationList.size(); 
+
+		int reservationId = reservationList.size();
 		// change appointDateTime from String to LocateDate
 		Reservation reservation = new Reservation(name, contact, numberOfPax, tableId);
 		reservationList.add(reservation);
 		return reservationId;
+	} */
+
+/**
+ * clearReservation() is to remove the expired Reservations from reservation list
+ */
+
+	private void clearReservation() {
+		LocalDate today = LocalDate.now();
+		LocalTime curTime = LocalTime.now();
+		for(Reservation reservation : reservationList){
+			LocalTime expireTime = reservation.getAppointmentTime().plusMinutes(EXPIRE_PERIOD);
+			if(reservation.getAppointmentDate().equals(today) && expireTime.isAfter(curTime)){
+				reservationList.remove(reservation);
+			}
+		}
+	};
+
+	public void createReservation(String name, String contact, int numberOfPax, LocalDate date, LocalTime time)
+	{
+		clearReservation();
+		// get all table of specific pax
+		ArrayList<Integer> tableList = tableController.getTableByPax(numberOfPax);
+
+		// check time to remove the reserved table from table list
+		for(Reservation reservation : reservationList){
+			LocalTime otherTime = reservation.getAppointmentTime().plusMinutes(119);
+			if(reservation.getAppointmentDate().equals(date) && otherTime.isAfter(time)){
+				if(tableList.contains(reservation.getTableId())) tableList.remove(reservation.getTableId());
+			}
+		}
+
+		// display available table id and ask user to choose the id
+		System.out.println("unreserved table: " + tableList.toString());
+		System.out.println("enter the table id to reserve the table");
+		int tableId = in.nextInt();
+
+		// create the reservation
+		Reservation reservation = new Reservation(name, contact, numberOfPax, tableId, date, time);
+		reservationList.add(reservation);
 	}
 	
 	/* public void showReservation(int reservationId)
