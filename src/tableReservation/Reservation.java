@@ -1,30 +1,36 @@
 package tableReservation;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;    
 
 public class Reservation {
 
 	private int reservationId;
+	//private LocalDateTime reservationTime; // system clock time
+	private String appointmentDateTime; //"11-02, 1900"
+	
 	private String name;
-	private String contact;
+	private String contact; 
 	private int numberOfPax;
 	private int tableId;
-	private LocalDate appointmentDate;
-	private LocalTime appointmentTime;
 	
-	public Reservation(int reservationId, String name, String contact, int numberOfPax, int tableId, LocalDate date, LocalTime time)
-	{	
+	public Reservation(int reservationId, String appointmentDateTime, String name, String contact, int numberOfPax, int tableId)
+	{
 		this.reservationId = reservationId;
+		
+		//LocalDateTime now = LocalDateTime.now(); 
+		//this.reservationTime = now;
+		this.appointmentDateTime = appointmentDateTime;
 		this.name = name;
 		this.contact = contact;
 		this.numberOfPax = numberOfPax;
 		this.tableId = tableId;
-		appointmentDate=date;
-		appointmentTime=time;
 	}
-		
+	
+	public String getAppointmentDateTime() // CANONOT CHANGE APPOINTMENT DATE TIME
+	{
+		return appointmentDateTime; 
+	}
+	
 	public int getReservationId()
 	{
 		return reservationId;
@@ -49,17 +55,4 @@ public class Reservation {
 	{
 		return tableId;
 	}
-
-	public String toString() {
-		return "Reservation ID: " + reservationId +
-		"\nReservation made for " + numberOfPax +
-		" under the name, " + name +
-		"\nThe table number is " + tableId +
-		//".\nThe appointment date time is " + reservationTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n";
-		// need to change to date and time
-		"\nThe appointment date time is "+appointmentDate+" " + appointmentTime.truncatedTo(ChronoUnit.SECONDS) + "\n";
-	}
-
-	public LocalDate getAppointmentDate(){ return appointmentDate;}
-	public LocalTime getAppointmentTime(){return appointmentTime;}
 }

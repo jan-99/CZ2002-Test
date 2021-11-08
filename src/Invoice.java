@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class Invoice{
+public class Invoice implements Serializable {
     private int invoiceID;
     private int orderID;
     private Order order;

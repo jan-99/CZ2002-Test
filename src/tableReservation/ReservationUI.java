@@ -1,21 +1,13 @@
 package tableReservation;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.io.*;
+import java.util.List;
 import java.util.Scanner;
-
-import java.time.LocalDateTime;    
-import java.time.format.DateTimeFormatter;
 
 public class ReservationUI {
 	
 	private ReservationController reservationController = ReservationController.getInstance();
-	private final String DATE_FORMAT = "dd/MM/yyyy";
-	private final String TIME_FORMAT = "HH:mm";
+	
 	private static ReservationUI reservationUI = null;
 	private static Scanner in = new Scanner(System.in);
 	
@@ -32,117 +24,73 @@ public class ReservationUI {
 	
 	public void run()
 	{
-		String dateStr;
-		String timeStr;
-		String name;
-		String contact;
+		int date;
+		int time; 
+		String name; 
+		String contact; 
 		int numberOfPax;
-
+		
 		int choice = this.displayOptions();
-		while (choice != 0) {
-			switch (choice) {
-				case 1:
-					boolean validDateFormat;
-					boolean validDate;
-					LocalDate appointmentDate;
-					do {
-						do {
-							System.out.println("Please enter date of reservation: dd/mm/yyyy");
-							dateStr = in.next();
-							validDateFormat = isValidDateFormat(dateStr, DATE_FORMAT);							
-						} while (!validDateFormat);
-						DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-						appointmentDate = LocalDate.parse(dateStr,dateFormatter);
-						validDate = isValidDate(appointmentDate);
-					}while(!validDate);
-
-
-					do {
-						System.out.println("Please enter time of reservation: HH:mm");
-						timeStr = in.next();
-						validDateFormat = isValidDateFormat(timeStr, TIME_FORMAT);
-					}while(!validDateFormat);
-
-					DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-					LocalTime appointmentTime = LocalTime.parse(timeStr,timeFormatter);
-
+		while (choice != 0)
+		{
+			switch(choice) {
+				case 1: 
+					System.out.println("Please enter date of reservation: ");
+					date = in.nextInt();
+					System.out.println("Please enter time of reservation (24 hour): ");
+					time = in.nextInt();
 					System.out.println("Please enter the number of person(s): ");
 					numberOfPax = in.nextInt();
 					in.nextLine();
-
+					String appointmentDateTime = String.format("%d Nov %dH", date, time);
+					
 					System.out.println("Please enter your name: ");
 					name = in.nextLine();
-
+					
 					System.out.println("Please enter your contact: ");
 					contact = in.nextLine();
-					while (true)
-					{
-						try {
-							if (contact.length() != 8)
-								throw new Exception("Invalid contact number!");
-						} catch (Exception e) {
-							System.out.println(e.getMessage());
-							System.out.println("Please enter your contact: ");
-							contact = in.nextLine();
-							continue;
-						}
-						break;
-					}
-					reservationController.createReservation(name, contact, numberOfPax, appointmentDate, appointmentTime);
-					reservationController.checkReservation(contact);
+					
+					
+					int reservationId = reservationController.createReservation(appointmentDateTime, name, contact, numberOfPax);
+					reservationController.showReservation(reservationId);
 					break;
 				case 2:
-					System.out.println("Please enter your contact: ");
-					contact = in.nextLine();
-					reservationController.checkReservation(contact);
-					break;
-				case 3:
-					System.out.println("Please enter your contact: ");
-					contact = in.nextLine();
-					reservationController.removeReservation(contact);
-
+				case 3: 
+					System.out.println("Please enter your reservationId: ");
+					int resID = in.nextInt();
+					in.nextLine();
+					reservationController.showReservation(resID);
+					
+					System.out.println("Do you wish to remove this reservation? Y/N");
+					char confirmation = in.nextLine().charAt(0);
+						if (confirmation == 'Y')
+						{
+							reservationController.removeReservation(resID);
+						}					
 					break;
 				case 4:
-					System.out.println("in case 4 to display the reservations");
-					reservationController.displayAllReservations();
+					System.out.println("Please enter your contact: ");
+					contact = in.nextLine();
+					
+					reservationController.displayAllReservation(contact);
 					break;
-
+				
 			}
-
+			
 			choice = this.displayOptions();
 		}
-
+		
 
 	}
-
-	private boolean isValidDateFormat(String dateTime, String FORMAT){
-		try {
-			DateFormat dateFormat = new SimpleDateFormat(FORMAT);
-			dateFormat.setLenient(false);
-			dateFormat.parse(dateTime);
-
-			return true;
-		} catch (ParseException ex) {
-			return false;
-		}		
-	}
-	 /** assume that can only make reservation at least one day in advance */
-	private boolean isValidDate(LocalDate appointmentDate){
-		if(appointmentDate.isAfter(LocalDate.now())) return true;
-		System.out.println("Reservations must be made 1 day in advanced");
-		return false;
-	}
-
-
 	
 	
 	 private int displayOptions() {
 	        System.out.println("--------Reservation System--------");
 		 	System.out.println("0. Go back to MainUI");
 	        System.out.println("1. Create a new reservation");
-	        System.out.println("2. Check reservation");
-	        System.out.println("3. Remove reservation");
-	        System.out.println("4. Display all reservations");
+	        System.out.println("2. Update reservation details");
+	        System.out.println("3. Remove a reservation");
+	        System.out.println("4. Print all reservations");
 	        System.out.println("Your choice: ");
 	        int choice = in.nextInt();
 	        in.nextLine();

@@ -1,6 +1,7 @@
 
 public class AlaCarte extends MenuItem{
 
+    private int AlaCarteID;
     Category type;
 
     public enum Category {
@@ -11,4 +12,10 @@ public class AlaCarte extends MenuItem{
         super(name, description, price);
         this.type = type;
     }
+
+    public int getAlaCarteID(){
+        return AlaCarteID;
+    }
+
+
 }
