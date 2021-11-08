@@ -6,15 +6,13 @@ import java.time.temporal.ChronoUnit;
 
 public class Reservation {
 
-	private LocalDateTime reservationTime; // system clock time
-//	private LocalDateTime appointmentDateTime; //"11-02, 1900"
 	private int reservationId;
-	private LocalDate appointmentDate;
-	private LocalTime appointmentTime;
 	private String name;
-	private String contact; 
+	private String contact;
 	private int numberOfPax;
 	private int tableId;
+	private LocalDate appointmentDate;
+	private LocalTime appointmentTime;
 	
 	public Reservation(int reservationId, String name, String contact, int numberOfPax, int tableId, LocalDate date, LocalTime time)
 	{	
@@ -26,12 +24,7 @@ public class Reservation {
 		appointmentDate=date;
 		appointmentTime=time;
 	}
-	
-	public LocalDateTime getRervationTime() // CANNOT CHANGE APPOINTMENT DATE TIME
-	{
-		return reservationTime; 
-	} 
-	
+		
 	public int getReservationId()
 	{
 		return reservationId;
