@@ -1,24 +1,40 @@
 package tableReservation;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
-public class ReservationController {
+import javax.sound.sampled.SourceDataLine;
+
+public class ReservationController extends AbstractController {
 	
 	private static Scanner in = new Scanner(System.in);
-	private final int EXPIRE_PERIOD = 3;
+	private final int EXPIRE_PERIOD = 30;
 	private ArrayList<Reservation> reservationList;
 	private TableController tableController = TableController.getInstance(); 
 	
 	private static ReservationController reservationController = null;
+	private static final String dir = "src/data/reservation.txt";
 
 	private static int reservationId = 0;
 	
 
 	public ReservationController()
 	{
-		this.reservationList = new ArrayList<>();
+		File file = new File(dir);
+        if (file.exists()) {
+            System.out.println("file exist");
+            reservationList = load(dir);
+        } else {
+            System.out.println("not exist");
+            file.getParentFile().mkdir();
+            file.createNewFile();
+            reservationList = new ArrayList<Reservation>();
+            save(dir, reservationList);
 	}
 	
 	public static ReservationController getInstance()
@@ -33,12 +49,14 @@ public class ReservationController {
 	// display all the attributes of reservation class corresponding to its reservation id
 	public void displayAllReservations() 
 	{
+		clearReservation();
 		for (Reservation r: reservationList) {
 			System.out.println(r.toString());			
 		}
 	}
 	
 	public Reservation getReservationById(int reservationId) {
+		clearReservation();
 		for (Reservation res : reservationList){
 			if( res.getReservationId() == reservationId)
 				return res;
@@ -55,8 +73,6 @@ public class ReservationController {
 		ArrayList<Reservation> toRemove = new ArrayList<>();
 		for(Reservation reservation : reservationList){
 			LocalTime expireTime = reservation.getAppointmentTime().plusMinutes(EXPIRE_PERIOD);
-
-			/** need to test */
 			if(reservation.getAppointmentDate().equals(today) && curTime.isAfter(expireTime)){
 				toRemove.add(reservation);
 			}
@@ -109,7 +125,7 @@ public class ReservationController {
 	}
 
 	// check reservation method: clearReservation method + search by contact no.
-	public boolean checkReservation(String contact) {
+	public boolean checkReservation (String contact) {
 		clearReservation();		
 		boolean found = false;
 		try {
@@ -156,6 +172,63 @@ public class ReservationController {
 
 	}
 	
-	
+	//   load method will be different between different controller
+    public ArrayList load(String filename) throws IOException {
+        ArrayList stringArray = (ArrayList) read(filename);
+        ArrayList alr = new ArrayList();  // to store invoices data
+
+        for (int i = 0; i < stringArray.size(); i++) {
+            String st = (String) stringArray.get(i);
+            StringTokenizer star = new StringTokenizer(st, "|");
+
+
+            int reservationId = Integer.parseInt(star.nextToken().trim());
+			String name = star.nextToken().trim();
+			String contact = star.nextToken().trim();
+			int numOfPax = Integer.parseInt(star.nextToken().trim());
+			int tableId = Integer.parseInt(star.nextToken().trim());
+			LocalDate date = LocalDate.parse(star.nextToken().trim());
+			LocalTime time = LocalTime.parse(star.nextToken().trim());
+
+            // create Invoice object from file data
+            Reservation reservation = new Reservation(reservationId,name,contact,numOfPax,tableId,date,time);
+
+            //add to Invoice List
+            alr.add(reservation);
+        }
+        return alr;
+    }
+
+
+
+    /**
+     * save method
+     * save method will be different with different controlelr
+     */
+
+    public static void save(String filename, List al) throws IOException {
+        List alw = new ArrayList();  //to store data
+
+        for (int i = 0; i < al.size(); i++) {
+            Reservation reservation = (Reservation) al.get(i);
+            StringBuilder st = new StringBuilder();
+            st.append(reservation.getReservationId()); // trim() ??
+            st.append("|");
+            st.append(reservation.getName());
+            st.append("|");
+            st.append(reservation.getContact());  // ke yi ma?
+            st.append("|");
+            st.append(reservation.getNumberOfPax());
+            st.append("|");
+            st.append(reservation.getTableId());
+            st.append("|");
+            st.append(reservation.getAppointmentDate());
+            st.append("|");
+            st.append(reservation.getAppointmentTime());
+            alw.add(st.toString());
+
+            write(filename, alw);
+        }
+    }
 	
 }

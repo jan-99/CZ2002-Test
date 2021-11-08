@@ -1,16 +1,16 @@
 package tableReservation;
 
 public class Table{
-	public enum seatNumber {
-		TWO,FOUR,SIX,EIGHT,TEN
-	}
+	// public enum seatNumber {
+	// 	TWO,FOUR,SIX,EIGHT,TEN
+	// }
 	
 	private int tableId;
 	private boolean isOccupied;
-	seatNumber numOfSeats; 
+	int numOfSeats; 
 		
 	
-	public Table(int tableId, seatNumber numOfSeats)
+	public Table(int tableId, int numOfSeats)
 	{
 		this.tableId = tableId;
 		this.isOccupied = false; 
@@ -28,7 +28,7 @@ public class Table{
 		return tableId;
 	}
 	
-	public seatNumber getNumOfSeats()
+	public int getNumOfSeats()
 	{
 		return numOfSeats;
 	}
@@ -38,9 +38,6 @@ public class Table{
 		this.isOccupied = true; 
 	}
 
-	public seatNumber getPax(){
-		return numOfSeats;
-	}
 	public void setUnoccupied()
 	{
 		this.isOccupied = false;

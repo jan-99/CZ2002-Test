@@ -5,39 +5,39 @@ import java.util.ArrayList;
 public class TableController {
 	
 	private Table[] listOfTables;
-	final int SIZE=12;
+	final int SIZE=20;
 	private static TableController tableController = null;
 	
 	public TableController()
 	{
 		
 		listOfTables = new Table[SIZE];
-		Table table1 = new Table(1, Table.seatNumber.TWO);
-		Table table2 = new Table(2, Table.seatNumber.TWO);
-		Table table3 = new Table(3, Table.seatNumber.TWO);
-		Table table4 = new Table(4, Table.seatNumber.TWO);
-		Table table5 = new Table(5, Table.seatNumber.FOUR);
-		Table table6 = new Table(6, Table.seatNumber.FOUR);
-		Table table7 = new Table(7, Table.seatNumber.FOUR);
-		Table table8 = new Table(8, Table.seatNumber.SIX);
-		Table table9 = new Table(9, Table.seatNumber.SIX);
-		Table table10 = new Table(10, Table.seatNumber.SIX);
-		Table table11 = new Table(11, Table.seatNumber.EIGHT);
-		Table table12 = new Table(12, Table.seatNumber.TEN);
-		
-		listOfTables[0] = table1;
-		listOfTables[1] = table2;
-		listOfTables[2] = table3;
-		listOfTables[3] = table4;
-		listOfTables[4] = table5;
-		listOfTables[5] = table6;
-		listOfTables[6] = table7;
-		listOfTables[7] = table8;
-		listOfTables[8] = table9;
-		listOfTables[9] = table10;
-		listOfTables[10] = table11;
-		listOfTables[11] = table12;
+		int i = 0;
+		listOfTables[i++] = new Table(i, 2);
+		listOfTables[i++] = new Table(i, 2);
+		listOfTables[i++] = new Table(i, 2);
+		listOfTables[i++] = new Table(i, 2);
 
+		listOfTables[i++] = new Table(i, 4);
+		listOfTables[i++] = new Table(i, 4);
+		listOfTables[i++] = new Table(i, 4);
+		listOfTables[i++] = new Table(i, 4);
+
+		listOfTables[i++] = new Table(i, 6);
+		listOfTables[i++] = new Table(i, 6);
+		listOfTables[i++] = new Table(i, 6);
+		listOfTables[i++] = new Table(i, 6);
+
+		listOfTables[i++] = new Table(i, 8);
+		listOfTables[i++] = new Table(i, 8);
+		listOfTables[i++] = new Table(i, 8);
+		listOfTables[i++] = new Table(i, 8);
+
+		listOfTables[i++] = new Table(i, 10);
+		listOfTables[i++] = new Table(i, 10);
+		listOfTables[i++] = new Table(i, 10);
+		listOfTables[i++] = new Table(i, 10);
+	
 	}
 	
 	public static TableController getInstance()
@@ -94,7 +94,7 @@ public class TableController {
 	// Showing all unoccupied tables corresponding to the number of people 
 	public void displayUnoccupiedTables(int numberOfPax)
 	{	
-		Table.seatNumber tablePax = convertIntToEnum(numberOfPax);
+		int tablePax = getTablePax(numberOfPax);
 	
 		System.out.println("Showing all unoccupied tables: ");
 		int j = 1;
@@ -130,40 +130,40 @@ public class TableController {
 		System.out.println("Table " + tableId + "Occupied: " + listOfTables[tableId].getOccupied() + " Number of Seats: " + listOfTables[tableId].numOfSeats);
 	}
 
-	public Table.seatNumber convertIntToEnum(int pax){
-		Table.seatNumber tablePax = null;
+	public int getTablePax(int pax){
+		int tablePax=0;
 		switch (pax)
 		{
 			case 1:
 			case 2:
-				tablePax = Table.seatNumber.TWO;
+				tablePax = 2;
 				break;
 			case 3:
 			case 4:
-				tablePax = Table.seatNumber.FOUR;
+				tablePax = 4;
 				break;
 			case 5:
 			case 6:
-				tablePax = Table.seatNumber.SIX;
+				tablePax = 6;
 				break;
 			case 7:
 			case 8:
-				tablePax = Table.seatNumber.EIGHT;
+				tablePax = 8;
 				break;
 			case 9:
 			case 10:
-				tablePax = Table.seatNumber.TEN;
+				tablePax = 10;
 				break;
 		}
 		return tablePax;
 	}
 	/**get table by pax*/
 	public ArrayList<Integer> getTableByPax(int pax){
-		Table.seatNumber sn = convertIntToEnum(pax);
+
 		ArrayList<Integer> tables = new ArrayList<>();
 
 		for(int i =0; i<SIZE; ++i){
-			if(listOfTables[i].getPax().equals(sn)){
+			if(listOfTables[i].getNumOfSeats() == pax){
 				tables.add(listOfTables[i].getTableId());
 			}
 		}

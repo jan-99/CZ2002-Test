@@ -45,7 +45,7 @@ public class ReservationUI {
 					boolean validDateFormat;
 					boolean validDate;
 					LocalDate appointmentDate;
-					//do {
+					do {
 						do {
 							System.out.println("Please enter date of reservation: dd/mm/yyyy");
 							dateStr = in.next();
@@ -54,7 +54,7 @@ public class ReservationUI {
 						DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 						appointmentDate = LocalDate.parse(dateStr,dateFormatter);
 						validDate = isValidDate(appointmentDate);
-					//}while(!validDate);
+					}while(!validDate);
 
 
 					do {
@@ -103,6 +103,7 @@ public class ReservationUI {
 
 					break;
 				case 4:
+					System.out.println("in case 4 to display the reservations");
 					reservationController.displayAllReservations();
 					break;
 
