@@ -6,7 +6,7 @@
     1. make use of InvoiceList
  */
 
-import FileReadWrite.SerializeDB;
+//import FileReadWrite.SerializeDB;
 import tableReservation.TableController;
 
 import java.io.*;
@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
 
-public class InvoiceController {
+public class InvoiceController extends AbstractController{
     //    private ArrayList<Invoice> invoices;
     private MemberController memberController = MemberController.getInstance();
     private OrderController orderController = OrderController.getInstance();
@@ -190,7 +190,7 @@ public class InvoiceController {
 
 //            String name = memberController.getMember(number).getName();
 
-            if (memberController.checkMembership(number)) {
+            if (memberController.checkIsMember(number)) {
 //                System.out.println(name + " (" + number + ") is a member");
                 afterDiscount = subtotal * memberController.getDiscountRate(); //discount rate should belong to?
             } else; //System.out.println(name + " (" + number + ") is not a member");
@@ -223,7 +223,7 @@ public class InvoiceController {
     private void unAssignTable(int orderId){
         Order order = orderController.getOrderById(orderId);
         int tableId = order.getTableId();
-        tableController.unAssignTable(tableId);   // print unAssign message
+        tableController.setUnoccupied(tableId);   // print unAssign message
     }
 
     public void printAll() {
@@ -232,18 +232,6 @@ public class InvoiceController {
         }
     }
 
-    public static List read(String filename) throws IOException {
-        List data = new ArrayList();
-        Scanner scanner = new Scanner(new FileInputStream(filename));
-        try {
-            while (scanner.hasNextLine()) {
-                data.add(scanner.nextLine());
-            }
-        } finally {
-            scanner.close();
-        }
-        return data;
-    }
 
 
     //   load method will be different between different controller
@@ -277,21 +265,6 @@ public class InvoiceController {
     }
 
 
-    /**
-     * write fixed content to the given file
-     */
-    public static void write(String fileName, List data) throws IOException {
-        PrintWriter out = new PrintWriter(new FileWriter(fileName));
-
-        try {
-            for (int i = 0; i < data.size(); i++) {
-                out.println((String) data.get(i));
-            }
-        } finally {
-            out.close();
-        }
-    }
-
 
     /**
      * save method
@@ -322,8 +295,6 @@ public class InvoiceController {
             alw.add(st.toString());
 
             write(filename, alw);
-
-
         }
     }
 }

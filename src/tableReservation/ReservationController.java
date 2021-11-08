@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class ReservationController {
 	
 	private static Scanner in = new Scanner(System.in);
-	private final int EXPIRE_PERIOD = 5;
+	private final int EXPIRE_PERIOD = 3;
 	private ArrayList<Reservation> reservationList;
 	private TableController tableController = TableController.getInstance(); 
 	
@@ -51,14 +51,19 @@ public class ReservationController {
 	private void clearReservation() {
 		LocalDate today = LocalDate.now();
 		LocalTime curTime = LocalTime.now();
+
+		ArrayList<Reservation> toRemove = new ArrayList<>();
 		for(Reservation reservation : reservationList){
 			LocalTime expireTime = reservation.getAppointmentTime().plusMinutes(EXPIRE_PERIOD);
+
+			/** need to test */
 			if(reservation.getAppointmentDate().equals(today) && curTime.isAfter(expireTime)){
-				reservationList.remove(reservation);
+				toRemove.add(reservation);
 			}
-			
 		}
+		reservationList.removeAll(toRemove);
 	};
+
 
 	public void createReservation(String name, String contact, int numberOfPax, LocalDate date, LocalTime time)
 	{

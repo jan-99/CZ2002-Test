@@ -3,6 +3,7 @@ import java.util.Scanner;
 import tableReservation.ReservationUI;
 import tableReservation.TableUI;
 
+//test
 public class Main {
 	
 	private static Scanner in = new Scanner(System.in);
