@@ -17,7 +17,7 @@ public class InvoiceUI {
     }
 
     public void run(){
-        Scanner sc = new Scanner(System.in);
+
 
         System.out.println("--------Invoice and Report Panel--------");
         System.out.println("1. printInvoice"+
@@ -25,7 +25,7 @@ public class InvoiceUI {
                 "\n3. print monthly revenue report"+
                 "\n4. back to main panel");
 
-        int choice = sc.nextInt();
+        int choice = in.nextInt();
         while(true) {
             switch (choice) {
                 case 1:
@@ -44,34 +44,31 @@ public class InvoiceUI {
                     System.out.println("invalid input!");
             }
             System.out.println("enter option:");
-            choice = sc.nextInt();
+            choice = in.nextInt();
         }
     }
 
     private void createInvoice(){
-        Scanner sc = new Scanner(System.in);
         int orderId;
         System.out.print("enter order ID:");                                // handle invalid input  1. in the orderList
         //                                                                                            2. not been checked out
-        orderId = sc.nextInt();
+        orderId = in.nextInt();
 
         System.out.println("enter phoneNumber to check membership");
 
-        String number = sc.next();
+        String number = in.next();
         invoiceController.printInvoice(orderId, number);
 
     }
 
     private void printRevenueReportByDay(){
-        Scanner sc= new Scanner(System.in);
         System.out.println("enter the date: (dd/mm/yyyy)");
-        String dateString = sc.next();
+        String dateString = in.next();
 
     }
     private void printRevenueReportByMonth(){
-        Scanner sc= new Scanner(System.in);
         System.out.println("Please enter the month(MM/YYYY)");
-        String dateStr = sc.next();
+        String dateStr = in.next();
         invoiceController.printMonthlyReport(dateStr);
     }
 }
